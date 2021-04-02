@@ -1,0 +1,10 @@
+/bin
+/include
+/lib
+/static
+__pycache__
+
+.Python
+.env
+*.pkl
+*.pyc
