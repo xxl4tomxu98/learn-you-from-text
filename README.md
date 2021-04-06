@@ -1,5 +1,5 @@
 # Big5-Personality-React-Flask
-It's a project on which we can build a React app and call endpoints to make predictions. The data is downloaded originally from Kaggle of the big5 personalities "IPIP-FFM-data-8Nov2018"
+It's a project on which we can build a React app and call endpoints to make predictions. The models used are a Random Forest Regressor and a Random Forest Classifier. The models are trained on a dataset from the myPersonality project (https://sites.google.com/michalkosinski.com/mypersonality). Models produce a predicted personality score, using the regression model, and a probability of the binary class, using the classification model, for each personality trait.
 
 
 ## Technologies
@@ -10,7 +10,7 @@ It's a project on which we can build a React app and call endpoints to make pred
 
 
 # Revised Preparation
-Create-react-app to create a basic React app to begin with. Next, bootstrap is loaded which allows us to create responsive websites for each screen size. In the App.js file a form with dropdowns and Predict and Reset Prediction buttons are added. Each form property is added to state and on pressing the Predict button, the data is sent to the Flask backend. The App.css file to add style to the page.
+Create-react-app to create a basic React app to begin with. Next, bootstrap is loaded which allows us to create responsive websites for each screen size. In the App.js file a form with textarea and Predict buttons are added. Each form property is added to state and on pressing the Predict button, the data is sent to the Flask backend. The App.css file to add style to the page.
 
 The Flask app has a POST endpoint /prediction. It accepts the input values as a json, converts it into an array and make prediction using the models stored in static folder as pickled files and return the prediction result as json.
 

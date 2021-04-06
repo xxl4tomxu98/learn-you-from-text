@@ -2,6 +2,7 @@
 /include
 /lib
 /static
+/cache
 __pycache__
 
 .Python

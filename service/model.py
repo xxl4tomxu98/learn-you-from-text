@@ -3,6 +3,7 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from data_prep import DataPrep
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+
 class Model():
     def __init__(self):
         self.rfr = RandomForestRegressor(bootstrap=True,
@@ -34,20 +35,21 @@ class Model():
         else:
             return self.rfc.predict_proba(X)
 
-if __name__ == '__main__':
-    traits = ['OPN', 'CON', 'EXT', 'AGR', 'NEU']
-    model = Model()
 
+if __name__ == '__main__':
+    # Fit the big 5 model for personality predition:
+    traits = ['OPN', 'CON', 'EXT', 'AGR', 'NEU']
+    big5_model = Model()    
     for trait in traits:
         dp = DataPrep()
         X_regression, y_regression = dp.prep_data('status', trait, regression=True, model_comparison=False)
         X_categorical, y_categorical = dp.prep_data('status', trait, regression=False, model_comparison=False)
         print('Fitting trait ' + trait + ' regression model...')
-        model.fit(X_regression, y_regression, regression=True)
+        big5_model.fit(X_regression, y_regression, regression=True)
         print('Done!')
         print('Fitting trait ' + trait + ' categorical model...')
-        model.fit(X_categorical, y_categorical, regression=False)
+        big5_model.fit(X_categorical, y_categorical, regression=False)
         print('Done!')
         with open('static/' + trait + '_model.pkl', 'wb') as f:
             # Write the model to a file.
-            pickle.dump(model, f)
+            pickle.dump(big5_model, f)        

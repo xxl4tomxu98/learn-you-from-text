@@ -136,4 +136,4 @@ class DataPrep():
 
 
     def load_data(self, filepath):
-        return pd.read_csv(filepath, encoding="ISO-8859-1")
+        return pd.read_csv(filepath, encoding="ISO-8859-1")    
