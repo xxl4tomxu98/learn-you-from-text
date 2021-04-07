@@ -10,10 +10,11 @@ import glob
 import numpy as np
 
 
-def review_to_words(review):
+def paragraph_to_words(paragraph):
+    # preprocessing the user input text into tokens
     nltk.download("stopwords", quiet=True)
     stemmer = PorterStemmer()  
-    text = BeautifulSoup(review, "html.parser").get_text() # Remove HTML tags
+    text = BeautifulSoup(paragraph, "html.parser").get_text() # Remove HTML tags
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower()) # Convert to lower case
     words = text.split() # Split string into words
     words = [w for w in words if w not in stopwords.words("english")] # Remove stopwords
@@ -22,8 +23,9 @@ def review_to_words(review):
 
 
 def convert_and_pad(word_dict, sentence, pad=500):
+    # 500 pad is arbitary since normal text sentences are not long
     NOWORD = 0 # We will use 0 to represent the 'no word' category
-    INFREQ = 1 # and we use 1 to represent the infrequent words, i.e., words not appearing in word_dict    
+    INFREQ = 1 # and we use 1 to represent infrequent words not appearing in word_dict    
     working_sentence = [NOWORD] * pad    
     for word_index, word in enumerate(sentence[:pad]):
         if word in word_dict:
@@ -34,6 +36,7 @@ def convert_and_pad(word_dict, sentence, pad=500):
 
 
 def convert_and_pad_data(word_dict, data, pad=500):
+    # paragraph padding calling sentence padding 
     result = []
     lengths = []    
     for sentence in data:
@@ -48,7 +51,6 @@ def preprocess_data(data_train, data_test, labels_train, labels_test,
                     cache_dir=os.path.join("./static/cache", "sentiment_analysis"), 
                     cache_file="preprocessed_data.pkl"):
     """Convert each review to words; read from cache if available."""
-
     # If cache_file is not None, try to read from it first
     cache_data = None
     if cache_file is not None:
@@ -57,16 +59,14 @@ def preprocess_data(data_train, data_test, labels_train, labels_test,
                 cache_data = pickle.load(f)
             print("Read preprocessed data from cache file:", cache_file)
         except:
-            pass  # unable to read from cache, but that's okay
-    
+            pass  # unable to read from cache, but that's okay    
     # If cache is missing, then do the heavy lifting
     if cache_data is None:
-        # Preprocess training and test data to obtain words for each review
-        #words_train = list(map(review_to_words, data_train))
-        #words_test = list(map(review_to_words, data_test))
-        words_train = [review_to_words(review) for review in data_train]
-        words_test = [review_to_words(review) for review in data_test]
-        
+        # Preprocess training and test data to obtain words for each text entered
+        #words_train = list(map(paragraph_to_words, data_train))
+        #words_test = list(map(paragraph_to_words, data_test))
+        words_train = [paragraph_to_words(text) for text in data_train]
+        words_test = [paragraph_to_words(text) for text in data_test]        
         # Write to cache file for future runs
         if cache_file is not None:
             cache_data = dict(words_train=words_train, words_test=words_test,
@@ -77,8 +77,7 @@ def preprocess_data(data_train, data_test, labels_train, labels_test,
     else:
         # Unpack data loaded from cache file
         words_train, words_test, labels_train, labels_test = (cache_data['words_train'],
-                cache_data['words_test'], cache_data['labels_train'], cache_data['labels_test'])
-    
+                cache_data['words_test'], cache_data['labels_train'], cache_data['labels_test'])    
     return words_train, words_test, labels_train, labels_test
 
 

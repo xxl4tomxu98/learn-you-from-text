@@ -5,8 +5,8 @@ import torch.nn as nn
 import torch.optim as optim
 import pickle, json, argparse, os, sys, torch.utils.data
 from math import pi
-from model_torch import LSTMClassifier
-from utils import review_to_words, convert_and_pad
+from model_torch import Sentiment
+from utils import paragraph_to_words, convert_and_pad
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
@@ -16,7 +16,9 @@ class Predictor():
     def __init__(self):        
         self.traits = ['OPN', 'CON', 'EXT', 'AGR', 'NEU']
         self.models = {}
-        self.load_models()        
+        self.modelLSTM = {}
+        self.load_models() 
+        self.load_LSTM('static/pytorch/')       
         
     
     def load_models(self):    
@@ -77,29 +79,29 @@ class Predictor():
         return plt #plt.show()
         
 
-def model_fn(model_dir):
-    """Load the PyTorch model from the `model_dir` directory."""
-    print("Loading model.")
-    # First, load the parameters used to create the model.
-    model_info = {}
-    model_info_path = os.path.join(model_dir, 'model_info.pth')
-    with open(model_info_path, 'rb') as f:
-        model_info = torch.load(f)
-    print("model_info: {}".format(model_info))
-    # Determine the device and construct the model.
-    device = torch.device("cpu")
-    model = LSTMClassifier(model_info['embedding_dim'], model_info['hidden_dim'], model_info['vocab_size'])
-    # Load the store model parameters.
-    model_path = os.path.join(model_dir, 'model.pth')
-    with open(model_path, 'rb') as f:
-        model.load_state_dict(torch.load(f))
-    # Load the saved word_dict.
-    word_dict_path = os.path.join(model_dir, 'word_dict.pkl')
-    with open(word_dict_path, 'rb') as f:
-        model.word_dict = pickle.load(f)
-    model.to(device).eval()
-    print("Done loading model.")
-    return model
+    def load_LSTM(self, model_dir):
+        """Load the PyTorch model from the `model_dir` directory."""
+        print("Loading model.")
+        # First, load the parameters used to create the model.
+        model_info = {}
+        model_info_path = os.path.join(model_dir, 'model_info.pth')
+        with open(model_info_path, 'rb') as f:
+            model_info = torch.load(f)
+        print("model_info: {}".format(model_info))
+        # Determine the device and construct the model.
+        device = torch.device("cpu")
+        modelLSTM = Sentiment(model_info['embedding_dim'], model_info['hidden_dim'], model_info['vocab_size'])
+        # Load the store model parameters.
+        model_path = os.path.join(model_dir, 'saved_weights.pt')
+        with open(model_path, 'rb') as f:
+            modelLSTM.load_state_dict(torch.load(f))
+        # Load the saved word_dict.
+        word_dict_path = os.path.join(model_dir, 'word_dict.pkl')
+        with open(word_dict_path, 'rb') as f:
+            modelLSTM.word_dict = pickle.load(f)
+        modelLSTM.to(device).eval()
+        print("Done loading model.")
+        return modelLSTM
 
 
 def input_fn(serialized_input_data, content_type):
@@ -120,15 +122,15 @@ def predict_fn(input_data, model):
     device = torch.device("cpu")    
     if model.word_dict is None:
         raise Exception('Model has not been loaded properly, no word_dict.')   
-    # TODO: Process input_data so that it is ready to be sent to our model.
-    #       You should produce two variables:
-    #         data_X   - A sequence of length 500 which represents the converted review
-    #         data_len - The length of the review    
+    # Process input_data so that it is ready to be sent to our model.
+    # You should produce two variables:
+    #    data_X   - A sequence of length 500 which represents the converted review
+    #    data_len - The length of the review    
     data_X = None
     data_len = None    
-    words = review_to_words(input_data)
+    words = paragraph_to_words(input_data)
     data_X, data_len = convert_and_pad(model.word_dict, words)
-    # Using data_X and data_len we construct an appropriate input tensor. Remember
+    # Using data_X and data_len we construct an appropriate input tensor.
     # that our model expects input data of the form 'len, review[500]'.
     data_pack = np.hstack((data_len, data_X))
     data_pack = data_pack.reshape(1, -1)    
@@ -136,8 +138,8 @@ def predict_fn(input_data, model):
     data = data.to(device)
     # Make sure to put the model into evaluation mode
     model.eval()
-    # TODO: Compute the result of applying the model to the input data. The variable `result` should
-    #       be a numpy array which contains a single integer which is either 1 or 0
+    # Compute the result of applying the model to the input data. The variable `result` should
+    # be a numpy array which contains a single integer which is either 1 or 0
     result = None    
     with torch.no_grad():
         out = model.forward(data)        
