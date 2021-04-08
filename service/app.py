@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from model import Model
+from model_torch import Sentiment
 from predict import Predictor
 
 
@@ -10,13 +11,10 @@ predictor = Predictor()
 
 class imgcounterclass():
     """Class container for indexing OCEAN plots."""
-
     _counter = 0
-
     def addcounter(self):
         self._counter += 1
-
-
+        
 image_counter=imgcounterclass()
 
 
@@ -43,6 +41,13 @@ def predict():
     #
     # return render_template('index.txt', predictions=prediction)
 
+
+@app.route('/analysis', methods=['POST'])
+def analysis():
+    text = request.json
+    result =  predictor.predict_LSTM(text, predictor.modelLSTM)    
+    return jsonify({'sentiment': str(result)}) 
+    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', threaded=True, debug=True)

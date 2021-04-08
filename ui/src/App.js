@@ -17,6 +17,8 @@ const App = () => {
 	const [predictions, setPredictions] = useState(false);
 
 	const [plotNum, setPlotNum] = useState(0);
+
+	const [analysis, setAnalysis] = useState(false);
 	    
 	const handleChange = (e) => {
 		const text = e.target.value;
@@ -45,11 +47,30 @@ const App = () => {
 		setIsloading(false);		     
 	}
 
+	const handleAnalysis = async (e) => {		
+		e.preventDefault();
+		if (!content) {
+		  	return;
+		}
+		
+		setIsloading(true);
+		const res = await fetch("/analysis", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"Accept": "application/json"
+			},
+			body: JSON.stringify(content)
+		});
+		const data = await res.json();						
+		setAnalysis(data.sentiment);		
+		setIsloading(false);		     
+	}
     
     const plot_style = {
       position: 'relative',
       margin: 'auto',
-	  height: '70%',
+	  height: '90%',
     }
 
     const plot_img_style = {
@@ -71,15 +92,28 @@ const App = () => {
 						<textarea className="form-control" rows="5" id="input"
 							onChange={handleChange} value={content}/>
 					</div>
-					
-					<Button 
-						type="summit"
-						variant="success"
-						className="btn btn-primary"
-						disabled={isLoading} 
-						onClick={!isLoading ? handleSubmit : null}>
-						{ isLoading ? 'Making prediction' : 'Predict Personality' }
-					</Button>					
+					<div className="form-row">
+						<div className="form-col">
+							<Button 
+								type="summit"
+								variant="success"
+								className="btn btn-primary"
+								disabled={isLoading} 
+								onClick={!isLoading ? handleSubmit : null}>
+								{ isLoading ? 'Predicting' : 'Predict Personality' }
+							</Button>		
+						</div>
+						<div className="form-col">
+							<Button 
+								type="summit"
+								variant="success"
+								className="btn btn-primary"
+								disabled={isLoading} 
+								onClick={!isLoading ? handleAnalysis : null}>
+								{ isLoading ? 'Analyzing' : 'Sentiment Analysis' }
+							</Button>		
+						</div>
+					</div>								
 				</Form>
 				
 				{predictions === false ? null :
@@ -127,18 +161,32 @@ const App = () => {
 										<td>{predictions.pred_prob_cNEU}</td>
 									</tr>
 								</tbody>
-							</table>
-							
-						</Col>
+							</table>							
+						</Col>									
+					</Row>								
+					)					
+            	}
+				{plotNum === 0 ? null :
+					(<Row className="result-container">
 						<Col>
 							<h5 id="result">Traits Radar Plot :</h5>
 							<div style={plot_style}>
 								<img src={process.env.PUBLIC_URL + `prediction${plotNum}.png`} style={plot_img_style} alt='plot'></img>
 							</div>
-						</Col>					
-					</Row>					
-					)
-            	}				
+						</Col>		
+					</Row>)
+				}
+				{analysis === false ? null :
+					(<Row className="result-container">
+						<Col>
+							<h5 id="result">Your Text Sentiment is :</h5>
+							<div className="mr-3">
+								{analysis.toString()}
+							</div>
+							{analysis>=0.5 ? "Positive" : "Negative"}
+						</Col>						
+					</Row>)	
+				}			
 			</div>
 		</Container>
     )
