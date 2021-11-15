@@ -4,9 +4,9 @@ The models for personality prediction are Random Forest Regressor and Random For
 The model for sentiment analysis is a pytorch recurrent neural network LSTM deep learning model that is trained using the [IMDb dataset](http://ai.stanford.edu/~amaas/data/sentiment/). There are multiple ways to download this large review dataset. Simplist would be use simple shell script:
 
 ``` shell
-  %mkdir ../data
-  !wget -O ../data/aclImdb_v1.tar.gz http://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz
-  !tar -zxf ../data/aclImdb_v1.tar.gz -C ../data
+  mkdir ../data
+  wget -O ../data/aclImdb_v1.tar.gz http://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz
+  tar -zxf ../data/aclImdb_v1.tar.gz -C ../data
 ```
 
 The data files are all stored for evaluations and checking in the data folder.

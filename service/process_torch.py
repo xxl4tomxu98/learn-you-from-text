@@ -8,9 +8,9 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 
 
-cache_dir = os.path.join("./static/cache", "sentiment_analysis")  # where to store cache files
+cache_dir = os.path.join("./cache", "sentiment_analysis")  # where to store cache files
 os.makedirs(cache_dir, exist_ok=True)  # ensure cache directory exists
-data_dir = './static/pytorch' # The folder we will use for storing data
+data_dir = './cache/pytorch' # The folder we will use for storing data
 if not os.path.exists(data_dir): # Make sure that the folder exists
     os.makedirs(data_dir)
 
