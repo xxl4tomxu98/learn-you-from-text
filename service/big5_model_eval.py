@@ -44,7 +44,6 @@ class ModelEvaluator():
         trait_best_params_dict = {}
         for trait in traits:
             if model == 'RandomForestRegressor':
-
                 # Number of trees in random forest
                 n_estimators = [int(x) for x in np.linspace(start = 200, stop = 1000, num = 10)]
                 # Number of features to consider at every split

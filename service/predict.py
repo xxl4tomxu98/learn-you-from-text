@@ -17,12 +17,12 @@ class Predictor():
         self.traits = ['OPN', 'CON', 'EXT', 'AGR', 'NEU']
         self.models = {}        
         self.load_models() 
-        self.load_LSTM('static/pytorch/')       
+        self.load_LSTM('cache/pytorch/')       
         
     
     def load_models(self):    
         for trait in self.traits:
-            with open('static/' + trait + '_model.pkl', 'rb') as f:
+            with open('cache/' + trait + '_model.pkl', 'rb') as f:
                 self.models[trait] = pickle.load(f)
 
 
@@ -64,7 +64,7 @@ class Predictor():
         angles = [n / float(N) * 2 * pi for n in range(N)]
         angles += angles[:1]
         # Initialise the spider plot
-        ax = plt.subplot(111, polar=True)
+        ax = plt.subplot(111, polar=True)        
         # Draw one axe per variable + add labels labels yet
         plt.xticks(angles[:-1], categories, color='grey', size=8)
         # Draw ylabels

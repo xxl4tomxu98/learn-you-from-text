@@ -48,7 +48,7 @@ def convert_and_pad_data(word_dict, data, pad=500):
 
 
 def preprocess_data(data_train, data_test, labels_train, labels_test,
-                    cache_dir=os.path.join("./static/cache", "sentiment_analysis"), 
+                    cache_dir=os.path.join("./cache", "sentiment_analysis"), 
                     cache_file="preprocessed_data.pkl"):
     """Convert each review to words; read from cache if available."""
     # If cache_file is not None, try to read from it first
@@ -95,7 +95,7 @@ def prepare_imdb_data(data, labels):
     return data_train, data_test, labels_train, labels_test
 
 
-def read_imdb_data(data_dir='../data/aclImdb'):
+def read_imdb_data(data_dir='./data/aclImdb'):
     data = {}
     labels = {}    
     for data_type in ['train', 'test']:

@@ -1,6 +1,6 @@
 import pickle
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
-from data_prep import DataPrep
+from big5_data_prep import DataPrep
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
@@ -50,6 +50,6 @@ if __name__ == '__main__':
         print('Fitting trait ' + trait + ' categorical model...')
         big5_model.fit(X_categorical, y_categorical, regression=False)
         print('Done!')
-        with open('static/' + trait + '_model.pkl', 'wb') as f:
+        with open('cache/' + trait + '_model.pkl', 'wb') as f:
             # Write the model to a file.
             pickle.dump(big5_model, f)        

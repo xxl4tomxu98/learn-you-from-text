@@ -46,7 +46,7 @@ To run the UI on server, we will use serve. We will begin by installing the serv
   serve -s build -l 3000
 ```
 
-You can now go to localhost:3000 to see that the UI is up and running. But it won’t interact with the Flask service which is still not up. So, Preparing the service on the second terminal, move inside the service folder using cd service. We begin by creating a virtual environment and install dependencies using conda install from conda miniforge3 libray and Python 3.9.2. Finally, we’ll run the Flask app.
+You can now go to localhost:3000 to see that the UI is up and running. But it won’t interact with the Flask service which is still not up. So, Preparing the service on the second terminal, move inside the service folder using cd service. We begin by creating a virtual environment and install dependencies using conda install from conda miniforge3 libray and Python 3.9. Finally, we’ll run the Flask app.
 
 ```bash
   conda activate ml

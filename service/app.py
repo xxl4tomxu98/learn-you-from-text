@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from model import Model
+from big5_model import Model
 from model_torch import Sentiment
 from predict import Predictor
 
@@ -50,4 +50,4 @@ def analysis():
     
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', threaded=True, debug=True)
+    app.run(host='127.0.0.1', threaded=True, debug=True)

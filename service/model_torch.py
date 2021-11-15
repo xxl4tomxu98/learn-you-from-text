@@ -93,6 +93,6 @@ class Sentiment(nn.Module):
             #save the best model
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                torch.save(self.state_dict(), 'static/pytorch/saved_weights.pt')
+                torch.save(self.state_dict(), 'cache/pytorch/saved_weights.pt')
             print(f'\tTrain Loss: {train_loss:.3f} | Train Acc: {train_acc*100:.2f}%')
             print(f'\t Val. Loss: {valid_loss:.3f} |  Val. Acc: {valid_acc*100:.2f}%')
