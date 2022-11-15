@@ -3,9 +3,11 @@
 /lib
 /static
 /cache
+/data
 __pycache__
 
 .Python
 .env
 *.pkl
 *.pyc
+*.csv
