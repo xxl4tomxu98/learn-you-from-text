@@ -1,4 +1,4 @@
-service/* linguist-vendored
-service/* linguist-documentation=false
-ui/* linguist-documentation=false
-ui/* linguist-vendored
+service/data/* linguist-vendored
+service/data/* linguist-documentation=false
+ui/build/* linguist-documentation=false
+ui/build/* linguist-vendored
